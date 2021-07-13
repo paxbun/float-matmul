@@ -12,6 +12,7 @@
 
 * `EXP_WIDTH`: Number of exponent bits
 * `MAN_WIDTH`: Number of mantissa bits
+* `BIAS`: The bias of the exponent (e.g. -127 in IEEE 754 FP32 format, -1023 in IEEE 754 FP64 format)
 * `VEC_SIZE`: Number of elements in the vector
 
 ## Macros (See `*_macros.vh`)
