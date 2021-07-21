@@ -3,13 +3,12 @@
 
 `include "vec_macros.vh"
 
-// `vec_sum` returns the sum of all elements of the given vector.
-module vec_sum #(`VEC_PARAMS) (
-    input   [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    in,
-    output  [(`FLOAT_WIDTH - 1) : 0]            out
+module vec_sum_reduce #(`VEC_PARAMS) (
+    input   [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]            in,
+    output  [(`VEC_WIDTH((VEC_SIZE + 1) / 2) - 1) : 0]  out
 );
-    parameter INTERMEDIATE_SIZE = (VEC_SIZE + 1) / 2;
     parameter NUM_ADDERS = VEC_SIZE / 2;
+    parameter INTERMEDIATE_SIZE = (VEC_SIZE + 1) / 2;
     genvar i;
     generate
         if (VEC_SIZE == 0) begin
@@ -17,36 +16,69 @@ module vec_sum #(`VEC_PARAMS) (
         end else if (VEC_SIZE == 1) begin
             assign out = in;
         end else begin
-            wire [(`VEC_WIDTH(INTERMEDIATE_SIZE) - 1) : 0] result;
             for (i = 0; i < NUM_ADDERS; i = i + 1) begin
                 float_add #(`FLOAT_PRPG_BIAS_PARAMS) adder (
                     in[`VEC_SELECT(i * 2 + 0)],
                     in[`VEC_SELECT(i * 2 + 1)],
-                    result[`VEC_SELECT(i)]
+                    out[`VEC_SELECT(i)]
                 );
             end
             if (VEC_SIZE % 2 == 1) begin
-                assign result[`VEC_SELECT(INTERMEDIATE_SIZE - 1)]
+                assign out[`VEC_SELECT(INTERMEDIATE_SIZE - 1)]
                     = in[`VEC_SELECT(VEC_SIZE - 1)];
             end
-            vec_sum #(
-                `FLOAT_PRPG_BIAS_PARAMS,
-                .VEC_SIZE(INTERMEDIATE_SIZE)
-            ) recursive (result, out);
+        end
+    endgenerate
+endmodule
+
+// `vec_sum` returns the sum of all elements of the given vector.
+module vec_sum #(`VEC_DEPTH_PARAMS) (
+    input                                           clk,
+    input   [(`VEC_WIDTH(`VEC_DEPTH_SIZE) - 1) : 0] in,
+    output  [(`FLOAT_WIDTH - 1) : 0]                out
+);
+    parameter INPUT_SIZE = `VEC_DEPTH_SIZE;
+    parameter INTM_SIZE = (1 << (DEPTH + 1)) - 1;
+    genvar i;
+    generate
+        if (DEPTH == 0) begin
+            assign out = in;
+        end else begin
+            reg [(`VEC_WIDTH(INTM_SIZE) - 1) : `FLOAT_WIDTH] intm_in;
+            wire [(`VEC_WIDTH(INTM_SIZE - INPUT_SIZE) - 1) : 0] intm_out;
+            always @(posedge clk) begin
+                intm_in[(`VEC_WIDTH(INTM_SIZE - INPUT_SIZE) - 1) : `FLOAT_WIDTH]
+                    <= intm_out[(`VEC_WIDTH(INTM_SIZE - INPUT_SIZE) - 1) : `FLOAT_WIDTH];
+                intm_in[(`VEC_WIDTH(INTM_SIZE) - 1) : (`VEC_WIDTH(INTM_SIZE - INPUT_SIZE))] <= in;
+            end
+            assign out = intm_out[`VEC_SELECT(0)];
+            for (i = 0; i < DEPTH; i = i + 1) begin
+                localparam out_begin = (1 << i) - 1;
+                localparam out_length = (1 << i);
+                localparam in_begin = out_begin + out_length;
+                localparam in_length = (1 << (i + 1));
+                vec_sum_reduce #(`FLOAT_PRPG_BIAS_PARAMS, .VEC_SIZE(in_length)) reducer (
+                    intm_in[`VEC_WIDTH(in_begin) +: `VEC_WIDTH(in_length)],
+                    intm_out[`VEC_WIDTH(out_begin) +: `VEC_WIDTH(out_length)]
+                );
+            end
         end
     endgenerate
 endmodule
 
 // `vec_dot` returns the result of the dot product of the given two vectors.
-module vec_dot #(`VEC_PARAMS) (
-    input   [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    lhs,
-    input   [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    rhs,
-    output  [(`FLOAT_WIDTH - 1) : 0]            out
+module vec_dot #(`VEC_DEPTH_PARAMS) (
+    input                                           clk,
+    input   [(`VEC_WIDTH(`VEC_DEPTH_SIZE) - 1) : 0] lhs,
+    input   [(`VEC_WIDTH(`VEC_DEPTH_SIZE) - 1) : 0] rhs,
+    output  [(`FLOAT_WIDTH - 1) : 0]                out
 );
-    wire [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] result;
+    parameter INPUT_SIZE = `VEC_DEPTH_SIZE;
+    wire [(`VEC_WIDTH(INPUT_SIZE) - 1) : 0] result;
+    reg [(`VEC_WIDTH(INPUT_SIZE) - 1) : 0] pipeline;
     genvar i;
     generate
-        for (i = 0; i < VEC_SIZE; i = i + 1) begin
+        for (i = 0; i < INPUT_SIZE; i = i + 1) begin
             float_mul #(`FLOAT_PRPG_BIAS_PARAMS) multiplier (
                 lhs[`VEC_SELECT(i)],
                 rhs[`VEC_SELECT(i)],
@@ -54,7 +86,10 @@ module vec_dot #(`VEC_PARAMS) (
             );
         end
     endgenerate
-    vec_sum #(`VEC_PRPG_PARAMS) sum (result, out);
+    vec_sum #(`VEC_PRPG_DEPTH_PARAMS) sum (clk, pipeline, out);
+    always @(posedge clk) begin
+        pipeline <= result;
+    end
 endmodule
 
 // `vec_add` returns the sum of the given two vectors.
