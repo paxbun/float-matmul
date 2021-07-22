@@ -1,4 +1,6 @@
-# Arbitrary precision floating-point matrix multiplication implementation
+# Arbitrary-precision floating-point pipelined matrix multiplication implementation
+
+Supports matrices with arbitrary widths and heights with arbitrary-precision floating-point numbers.
 
 ## Project structure
 
