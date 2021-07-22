@@ -6,9 +6,9 @@
 // `mat_mul` implements the matrix multiplication.
 module mat_mul #(
     `FLOAT_BIAS_PARAMS,
-    parameter I = 32,
-    parameter J = 32,
-    parameter K = 32
+    parameter I = 4,
+    parameter J = 4,
+    parameter K = 4
 ) (
     input                                   clk,
     input   [(`MAT_WIDTH(I, J) - 1) : 0]    lhs,
