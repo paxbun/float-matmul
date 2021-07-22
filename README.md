@@ -5,9 +5,9 @@ Supports matrices with arbitrary widths and heights with arbitrary-precision flo
 ## Project structure
 
 * `src/`: Contains module implementations and headers.
-  - `float.v` & `float_macros.vh`: Implmements the floating-point addition and the multiplication.
-  - `vec.v` & `vec_macros.vh`: Implements the vector addition and the dot product.
-  - `mat.v` & `mat_macros.vh`: Implements the matrix multiplication.
+  - `float_*.v` & `float_macros.vh`: Implmements the floating-point addition and the multiplication.
+  - `vec_*.v` & `vec_macros.vh`: Implements the vector addition and the dot product.
+  - `mat_*.v` & `mat_macros.vh`: Implements the matrix multiplication.
 * `tb/`: Contains testbenches.
 
 ## Common module parameters (See `*_macros.vh`)
