@@ -55,19 +55,19 @@ module vec_sum #(`VEC_PARAMS) (
         end
     endfunction
 
-    parameter DEPTH = num_reducers(VEC_SIZE);
     genvar i;
     generate
-        if (DEPTH == 0) begin
+        if (VEC_SIZE == 1) begin
             assign out = in;
         end else begin
-            reg [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] intm_in [(DEPTH - 1) : 0];
-            wire [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] intm_out [(DEPTH - 1) : 0];
+            localparam depth = num_reducers(VEC_SIZE);
+            reg [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] intm_in [(depth - 1) : 0];
+            wire [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] intm_out [(depth - 1) : 0];
             always @(posedge clk) begin
                 intm_in[0] <= in;
             end
-            assign out = intm_out[DEPTH - 1];
-            for (i = 0; i < DEPTH; i = i + 1) begin
+            assign out = intm_out[depth - 1];
+            for (i = 0; i < depth; i = i + 1) begin
                 localparam in_size = input_width_at(VEC_SIZE, i);
                 localparam out_size = (in_size + 1) / 2;
                 vec_sum_reduce #(`FLOAT_PRPG_BIAS_PARAMS, .VEC_SIZE(in_size)) reducer (
@@ -76,7 +76,8 @@ module vec_sum #(`VEC_PARAMS) (
                 );
                 if (i > 0) begin
                     always @(posedge clk) begin
-                        intm_in[i][(`VEC_WIDTH(in_size) - 1) : 0] <= intm_out[i - 1][(`VEC_WIDTH(in_size) - 1) : 0];
+                        intm_in[i][(`VEC_WIDTH(in_size) - 1) : 0]
+                            <= intm_out[i - 1][(`VEC_WIDTH(in_size) - 1) : 0];
                     end
                 end
             end
