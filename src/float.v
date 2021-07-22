@@ -19,8 +19,11 @@ module float_naive_lzc #(`LZC_PARAMS) (
     output  reg [(OUTPUT_WIDTH - 1) : 0]    out
 );
     reg [(OUTPUT_WIDTH - 1) : 0] out_list[INPUT_WIDTH  : 0];
-    assign out_list[0] = OUTPUT_STEP * INPUT_WIDTH + OUTPUT_BIAS;
-    assign out = out_list[INPUT_WIDTH];
+
+    always @(*) begin
+        out_list[0] <= OUTPUT_STEP * INPUT_WIDTH + OUTPUT_BIAS;
+        out <= out_list[INPUT_WIDTH];
+    end
     
     genvar i;
     generate
@@ -48,8 +51,11 @@ module float_lzc #(`LZC_PARAMS, parameter GROUP_SIZE = 8) (
 
     wire [(OUTPUT_WIDTH - 1) : 0] group_out[(NUM_GROUPS - 1) : 0];
     reg [(OUTPUT_WIDTH - 1) : 0] out_list[(NUM_GROUPS - 1) : 0];
-    assign out_list[0] = group_out[0];
-    assign out = out_list[NUM_GROUPS - 1];
+
+    always @(*) begin
+        out_list[0] <= group_out[0];
+        out <= out_list[NUM_GROUPS - 1];
+    end
 
     float_naive_lzc #(
         .INPUT_WIDTH(LAST_GROUP_SIZE),
@@ -94,21 +100,20 @@ module float_break #(`FLOAT_PARAMS) (
     output  reg [(MAN_WIDTH + 2) : 0]       man
 );
     assign sign = in[`FLOAT_WIDTH - 1];
-
     assign exp[(EXP_WIDTH + 1) : EXP_WIDTH] = 2'b0;
-    assign man[(MAN_WIDTH + 2) : (MAN_WIDTH + 1)] = 2'b0;
-
     assign exp[(EXP_WIDTH - 1) : 1] = in[(`FLOAT_WIDTH - 2) : (MAN_WIDTH + 1)];
+
     always @(*) begin
+        man[(MAN_WIDTH + 2) : (MAN_WIDTH + 1)] <= 2'b0;
         if (!in[(`FLOAT_WIDTH - 2) : MAN_WIDTH]) begin
             man[MAN_WIDTH] <= 0;
         end else begin
             man[MAN_WIDTH] <= 1;
         end
+        man[(MAN_WIDTH - 1) : 0] = in[(MAN_WIDTH - 1) : 0];
     end
 
     assign exp[0] = in[MAN_WIDTH] | !man[MAN_WIDTH];
-    assign man[(MAN_WIDTH - 1) : 0] = in[(MAN_WIDTH - 1) : 0];
 endmodule
 
 // `float_combine` combines the given sign part, the exponent part, and the mantissa part into one
@@ -126,7 +131,6 @@ module float_combine #(`FLOAT_PARAMS) (
     wire [MAN_WIDTH : 0] final_man, final_man_shifted_right;
     wire [(MAN_WIDTH + 2) : 0] man_shifted_left;
     
-    assign out[(`FLOAT_WIDTH - 1)] = sign;
     assign final_exp = exp + exp_offset;
     assign man_shifted_left = man << man_shift;
     assign final_man = man_shifted_left[(MAN_WIDTH + 1) : 1];
@@ -145,6 +149,7 @@ module float_combine #(`FLOAT_PARAMS) (
     ) man_shift_calc (man[(MAN_WIDTH + 1) : 0], man_shift);
 
     always @(*) begin
+        out[(`FLOAT_WIDTH - 1)] <= sign;
         // If the exponent is negative or 0
         if (final_exp[EXP_WIDTH + 1]
             || final_exp[(EXP_WIDTH - 1) : 0] == { EXP_WIDTH { 1'b0 } }) begin
