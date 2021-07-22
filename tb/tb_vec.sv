@@ -12,14 +12,13 @@ module tb_float_vec_sum;
     parameter EXP_WIDTH = 8;
     parameter MAN_WIDTH = 23;
     parameter BIAS = -127;
-    parameter DEPTH = 3;
-    parameter VEC_SIZE = 1 << DEPTH;
+    parameter VEC_SIZE = 13;
 
     shortreal in_val [(VEC_SIZE - 1) : 0];
     shortreal out_val;
     reg [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] in;
     wire [(`FLOAT_WIDTH - 1) : 0] out;
-    vec_sum #(`VEC_PRPG_DEPTH_PARAMS) sum (clk, in, out);
+    vec_sum #(`VEC_PRPG_PARAMS) sum (clk, in, out);
 
     always begin
         out_val = 0.0;
@@ -44,8 +43,7 @@ module tb_float_vec_dot;
     parameter EXP_WIDTH = 8;
     parameter MAN_WIDTH = 23;
     parameter BIAS = -127;
-    parameter DEPTH = 3;
-    parameter VEC_SIZE = `VEC_DEPTH_SIZE;
+    parameter VEC_SIZE = 17;
 
     shortreal lhs_val [(VEC_SIZE - 1) : 0];
     shortreal rhs_val [(VEC_SIZE - 1) : 0];
@@ -53,7 +51,7 @@ module tb_float_vec_dot;
     reg [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] lhs;
     reg [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] rhs;
     wire [(`FLOAT_WIDTH - 1) : 0] out;
-    vec_dot #(`VEC_PRPG_DEPTH_PARAMS) dot (clk, lhs, rhs, out);
+    vec_dot #(`VEC_PRPG_PARAMS) dot (clk, lhs, rhs, out);
 
     always begin
         out_val = 0.0;
