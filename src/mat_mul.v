@@ -3,6 +3,7 @@
 
 `include "mat_macros.vh"
 
+// `mat_mul` implements the matrix multiplication.
 module mat_mul #(
     `FLOAT_BIAS_PARAMS,
     parameter I = 32,
