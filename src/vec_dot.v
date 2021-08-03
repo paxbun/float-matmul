@@ -8,7 +8,7 @@ module vec_dot #(`VEC_PARAMS) (
     input                                       clk,
     input   [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    lhs,
     input   [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    rhs,
-    output  [(`FLOAT_WIDTH - 1) : 0]            out
+    output  [(`FLOAT_WIDTH - 1) : 0]            res
 );
     wire [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] result;
     reg [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] pipeline;
@@ -22,7 +22,7 @@ module vec_dot #(`VEC_PARAMS) (
             );
         end
     endgenerate
-    vec_sum #(`VEC_PRPG_PARAMS) sum (clk, pipeline, out);
+    vec_sum #(`VEC_PRPG_PARAMS) sum (clk, pipeline, res);
     always @(posedge clk) begin
         pipeline <= result;
     end

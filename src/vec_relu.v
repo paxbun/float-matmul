@@ -6,12 +6,12 @@
 // `vec_relu` applies the ReLU operation to each element of the given vector.
 module vec_relu #(`VEC_PARAMS) (
     input   [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    in,
-    output  [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    out
+    output  [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    res
 );
     genvar i;
     generate
         for (i = 0; i < VEC_SIZE; i = i + 1) begin
-            float_relu #(`FLOAT_PRPG_PARAMS) relu (in[`VEC_SELECT(i)], out[`VEC_SELECT(i)]);
+            float_relu #(`FLOAT_PRPG_PARAMS) relu (in[`VEC_SELECT(i)], res[`VEC_SELECT(i)]);
         end
     endgenerate
 endmodule

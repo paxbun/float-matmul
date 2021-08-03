@@ -12,7 +12,7 @@ module float_combine #(`FLOAT_PARAMS) (
     input                                   sign,
     input       [(EXP_WIDTH + 1) : 0]       exp,
     input       [(MAN_WIDTH + 2) : 0]       man,
-    output  reg [(`FLOAT_WIDTH - 1) : 0]    out
+    output  reg [(`FLOAT_WIDTH - 1) : 0]    res
 );
     wire [(EXP_WIDTH + 1) : 0] exp_offset, man_shift, final_exp;
     wire [MAN_WIDTH : 0] final_man, final_man_shifted_right;
@@ -36,26 +36,26 @@ module float_combine #(`FLOAT_PARAMS) (
     ) man_shift_calc (man[(MAN_WIDTH + 1) : 0], man_shift);
 
     always @(*) begin
-        out[(`FLOAT_WIDTH - 1)] <= sign;
+        res[(`FLOAT_WIDTH - 1)] <= sign;
         // If the exponent is negative or 0
         if (final_exp[EXP_WIDTH + 1]
             || final_exp[(EXP_WIDTH - 1) : 0] == { EXP_WIDTH { 1'b0 } }) begin
             // Set the exponent of the result to 0 and shift the mantissa again
-            out[(`FLOAT_WIDTH - 2) : MAN_WIDTH] <= { EXP_WIDTH { 1'b0 } };
-            out[(MAN_WIDTH - 1) : 0] <= final_man_shifted_right[(MAN_WIDTH - 1) : 0];
+            res[(`FLOAT_WIDTH - 2) : MAN_WIDTH] <= { EXP_WIDTH { 1'b0 } };
+            res[(MAN_WIDTH - 1) : 0] <= final_man_shifted_right[(MAN_WIDTH - 1) : 0];
         end else if (final_exp[EXP_WIDTH]
             || final_exp[(EXP_WIDTH - 1) : 0] == { EXP_WIDTH { 1'b1 } }) begin
             // If the exponent is greater than or equal to { EXP_WIDTH { 1'b1 } },
             // then the result is infinity
-            out[(`FLOAT_WIDTH - 2) : MAN_WIDTH] <= { EXP_WIDTH { 1'b1 } };
-            out[(MAN_WIDTH - 1) : 0] <= { MAN_WIDTH { 1'b0 } };
+            res[(`FLOAT_WIDTH - 2) : MAN_WIDTH] <= { EXP_WIDTH { 1'b1 } };
+            res[(MAN_WIDTH - 1) : 0] <= { MAN_WIDTH { 1'b0 } };
         end else if (final_man[MAN_WIDTH]) begin
-            out[(`FLOAT_WIDTH - 2) : MAN_WIDTH] <= final_exp[(EXP_WIDTH - 1) : 0];
-            out[(MAN_WIDTH - 1) : 0] <= final_man[(MAN_WIDTH - 1) : 0];
+            res[(`FLOAT_WIDTH - 2) : MAN_WIDTH] <= final_exp[(EXP_WIDTH - 1) : 0];
+            res[(MAN_WIDTH - 1) : 0] <= final_man[(MAN_WIDTH - 1) : 0];
         end else begin
             // The result is 0
-            out[(`FLOAT_WIDTH - 2) : MAN_WIDTH] <= { EXP_WIDTH { 1'b0 } };
-            out[(MAN_WIDTH - 1) : 0] <= { EXP_WIDTH { 1'b0 } };
+            res[(`FLOAT_WIDTH - 2) : MAN_WIDTH] <= { EXP_WIDTH { 1'b0 } };
+            res[(MAN_WIDTH - 1) : 0] <= { EXP_WIDTH { 1'b0 } };
         end
     end
 endmodule

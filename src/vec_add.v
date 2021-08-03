@@ -7,7 +7,7 @@
 module vec_add #(`VEC_PARAMS) (
     input   [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    lhs,
     input   [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    rhs,
-    output  [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    out
+    output  [(`VEC_WIDTH(VEC_SIZE) - 1) : 0]    res
 );
     genvar i;
     generate
@@ -15,7 +15,7 @@ module vec_add #(`VEC_PARAMS) (
             float_add #(`FLOAT_PRPG_BIAS_PARAMS) adder (
                 lhs[`VEC_SELECT(i)],
                 rhs[`VEC_SELECT(i)],
-                out[`VEC_SELECT(i)]
+                res[`VEC_SELECT(i)]
             );
         end
     endgenerate

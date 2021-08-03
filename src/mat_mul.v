@@ -13,7 +13,7 @@ module mat_mul #(
     input                                   clk,
     input   [(`MAT_WIDTH(I, J) - 1) : 0]    lhs,
     input   [(`MAT_WIDTH(J, K) - 1) : 0]    rhs,
-    output  [(`MAT_WIDTH(I, K) - 1) : 0]    out
+    output  [(`MAT_WIDTH(I, K) - 1) : 0]    res
 );
     genvar i, j, k;
     generate
@@ -27,7 +27,7 @@ module mat_mul #(
                 vec_dot #(
                     `FLOAT_PRPG_BIAS_PARAMS,
                     .VEC_SIZE(J)
-                ) dot_product (clk, lhs_tmp, rhs_tmp, out[`MAT_SELECT(i, k, K)]);
+                ) dot_product (clk, lhs_tmp, rhs_tmp, res[`MAT_SELECT(i, k, K)]);
             end
         end
     endgenerate

@@ -8,17 +8,17 @@
 // reason.
 module float_lzc #(`LZC_PARAMS, parameter GROUP_SIZE = 8) (
     input       [(INPUT_WIDTH - 1) : 0]     in,
-    output  reg [(OUTPUT_WIDTH - 1) : 0]    out
+    output  reg [(OUTPUT_WIDTH - 1) : 0]    res
 );
     parameter NUM_GROUPS = (INPUT_WIDTH + (GROUP_SIZE - 1)) / GROUP_SIZE;
     parameter LAST_GROUP_SIZE = INPUT_WIDTH - (NUM_GROUPS - 1) * GROUP_SIZE;
 
     wire [(OUTPUT_WIDTH - 1) : 0] group_out[(NUM_GROUPS - 1) : 0];
-    reg [(OUTPUT_WIDTH - 1) : 0] out_list[(NUM_GROUPS - 1) : 0];
+    reg [(OUTPUT_WIDTH - 1) : 0] res_list[(NUM_GROUPS - 1) : 0];
 
     always @(*) begin
-        out_list[0] <= group_out[0];
-        out <= out_list[NUM_GROUPS - 1];
+        res_list[0] <= group_out[0];
+        res <= res_list[NUM_GROUPS - 1];
     end
 
     float_naive_lzc #(
@@ -43,9 +43,9 @@ module float_lzc #(`LZC_PARAMS, parameter GROUP_SIZE = 8) (
 
             always @(*) begin
                 if (current) begin
-                    out_list[i] <= group_out[i];
+                    res_list[i] <= group_out[i];
                 end else begin
-                    out_list[i] <= out_list[i - 1];
+                    res_list[i] <= res_list[i - 1];
                 end
             end
         end
