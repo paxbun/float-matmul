@@ -33,6 +33,7 @@ module vec_sum #(`VEC_PARAMS) (
             assign out = in;
         end else begin
             localparam depth = num_reducers(VEC_SIZE);
+            // TODO: change the type so `intm_in` has the optimal size 
             reg [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] intm_in [(depth - 1) : 1];
             wire [(`VEC_WIDTH(VEC_SIZE) - 1) : 0] intm_out [(depth - 1) : 0];
             assign out = intm_out[depth - 1];
