@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "float_macros.vh"
+`include "../inc/float_macros.vh"
 
 `define NEGATE(cond, expr) ((cond) ? -(expr) : (expr))
 

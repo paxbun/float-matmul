@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "vec_macros.vh"
+`include "../inc/vec_macros.vh"
 
 // `vec_sum` returns the sum of all elements of the given vector.
 module vec_sum #(`VEC_PARAMS) (

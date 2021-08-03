@@ -1,4 +1,4 @@
-`include "../src/mat_macros.vh"
+`include "../inc/mat_macros.vh"
 
 module tb_float_mat_mul;
     reg clk;

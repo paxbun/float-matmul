@@ -4,7 +4,7 @@
 `ifndef VEC_MACROS_VH
 `define VEC_MACROS_VH
 
-`include "float_macros.vh"
+`include "../inc/float_macros.vh"
 
 `define VEC_PARAMS `FLOAT_BIAS_PARAMS, parameter VEC_SIZE = 32
 `define VEC_PRPG_PARAMS `FLOAT_PRPG_BIAS_PARAMS, .VEC_SIZE(VEC_SIZE)

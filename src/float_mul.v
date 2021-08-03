@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "float_macros.vh"
+`include "../inc/float_macros.vh"
 
 // `float_mul` performs the floating-point number multiplication.
 module float_mul #(`FLOAT_BIAS_PARAMS) (

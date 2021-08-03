@@ -1,4 +1,4 @@
-`include "../src/vec_macros.vh"
+`include "../inc/vec_macros.vh"
 
 module tb_float_vec_sum;
     reg clk;

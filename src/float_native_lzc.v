@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "lzc_macros.vh"
+`include "../inc/lzc_macros.vh"
 
 // `float_naive_lzc` counts the number of the leading zeros of the given unsigned integer.
 // `float_naive_lzc` assigns `s * n + b` to `out` where `s` is OUTPUT_STEP, `b` is OUTPUT_BIAS, and

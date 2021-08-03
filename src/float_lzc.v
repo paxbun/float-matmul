@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "lzc_macros.vh"
+`include "../inc/lzc_macros.vh"
 
 // `float_lzc` performs the same operation with that of `float_naive_lzc`, but also uses logical and
 // for shorter critical path. Always prefer `float_lzc` to `float_naive_lzc` without any special

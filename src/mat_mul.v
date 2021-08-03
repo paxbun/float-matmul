@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "mat_macros.vh"
+`include "../inc/mat_macros.vh"
 
 // `mat_mul` implements the matrix multiplication.
 module mat_mul #(

@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "float_macros.vh"
+`include "../inc/float_macros.vh"
 
 // `float_break` splits the given floating-point number into the sign part, the exponent part, and
 // the mantissa part. `float_break` extends the mantissa part so it follows the fixed-point number

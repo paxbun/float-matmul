@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "float_macros.vh"
+`include "../inc/float_macros.vh"
 
 // `float_combine` combines the given sign part, the exponent part, and the mantissa part into one
 // single floating-point number. Note that `float_combine` assumes that the mantissa is always

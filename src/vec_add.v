@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "vec_macros.vh"
+`include "../inc/vec_macros.vh"
 
 // `vec_add` returns the sum of the given two vectors.
 module vec_add #(`VEC_PARAMS) (

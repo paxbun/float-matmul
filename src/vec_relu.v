@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "vec_macros.vh"
+`include "../inc/vec_macros.vh"
 
 // `vec_relu` applies the ReLU operation to each element of the given vector.
 module vec_relu #(`VEC_PARAMS) (

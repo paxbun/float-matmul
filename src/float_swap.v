@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "float_macros.vh"
+`include "../inc/float_macros.vh"
 
 // `float_swap` ensures that the exponent of `lhs` is the same or greater than that of `rhs`.
 module float_swap #(`FLOAT_PARAMS) (

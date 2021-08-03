@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Chanjung Kim (paxbun). All rights reserved.
 // Licensed under the MIT License.
 
-`include "float_macros.vh"
+`include "../inc/float_macros.vh"
 
 // `float_relu` applies the ReLU operation to the given vector.
 module float_relu #(`FLOAT_PARAMS) (
